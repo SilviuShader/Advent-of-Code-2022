@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int ObjectPriority(char object)
+int object_priority(const char object)
 {
 	if (object >= 'a' && object <= 'z')
 		return object - 'a' + 1;
@@ -17,21 +17,21 @@ int ObjectPriority(char object)
 	return -1;
 }
 
-int RucksackPriority(vector<int>& rucksack)
+int rucksack_priority(vector<int>& rucksack)
 {
-	auto half = rucksack.size() >> 1;
+	const auto half = static_cast<int>(rucksack.size()) >> 1;
 	sort(rucksack.begin(), rucksack.begin() + half);
 	sort(rucksack.begin() + half, rucksack.end());
 	auto i0 = 0;
 	auto i1 = half;
 
-	while (i0 < half && i1 < rucksack.size())
+	while (i0 < half && i1 < static_cast<int>(rucksack.size()))
 	{
-		auto left = rucksack[i0];
-		auto right = rucksack[i1];
+		const auto left = rucksack[i0];
+		const auto right = rucksack[i1];
 		if (left == right)
 			return left;
-		else if (left < right)
+		if (left < right)
 			i0++;
 		else
 			i1++;
@@ -42,54 +42,54 @@ int RucksackPriority(vector<int>& rucksack)
 	return -1;
 }
 
-int CommonItem(vector<vector<int>>::iterator begin, vector<vector<int>>::iterator end)
+int common_item(const vector<vector<int>>::iterator& begin, const vector<vector<int>>::iterator& end)
 {
 	vector<int> indices;
 
-	for (auto rucksack = begin; rucksack != end; rucksack++)
+	for (auto rucksack = begin; rucksack != end; ++rucksack)
 		indices.push_back(0);
 
 	auto found = false;
 	while (!found)
 	{
 		auto index = 0;
-		auto previousValue = -1;
+		auto previous_value = -1;
 
 		found = true;
 
-		for (auto rucksack = begin; rucksack != end; rucksack++)
+		for (auto rucksack = begin; rucksack != end; ++rucksack)
 		{
-			auto& rucksackObject = *rucksack;
-			auto value = rucksackObject[indices[index]];
-			
+			auto& rucksack_object = *rucksack;
+			const auto value = rucksack_object[indices[index]];
+
 			if (index == 0)
-				previousValue = value;
-			else if (previousValue != value)
+				previous_value = value;
+			else if (previous_value != value)
 				found = false;
 
 			index++;
 		}
 
 		if (found)
-			return previousValue;
+			return previous_value;
 
-		auto minValue = 100;
+		auto min_value = 100;
 		index = 0;
-		auto minIndex = 0;
-		for (auto rucksack = begin; rucksack != end; rucksack++)
+		auto min_index = 0;
+		for (auto rucksack = begin; rucksack != end; ++rucksack)
 		{
-			auto& rucksackObject = *rucksack;
-			auto value = rucksackObject[indices[index]];
+			auto& rucksack_object = *rucksack;
+			const auto value = rucksack_object[indices[index]];
 
-			if (value < minValue)
+			if (value < min_value)
 			{
-				minValue = value;
-				minIndex = index;
+				min_value = value;
+				min_index = index;
 			}
 
 			index++;
 		}
-		indices[minIndex]++;
+		indices[min_index]++;
 	}
 
 	return 0;
@@ -104,9 +104,9 @@ int main()
 	while (fin >> line)
 	{
 		vector<int> rucksack;
-		for (auto object : line)
+		for (const auto object : line)
 		{
-			auto priority = ObjectPriority(object);
+			auto priority = object_priority(object);
 			if (priority == -1)
 				continue;
 			rucksack.push_back(priority);
@@ -118,7 +118,7 @@ int main()
 
 	auto result1 = 0;
 	for (auto& rucksack : rucksacks)
-		result1 += RucksackPriority(rucksack);
+		result1 += rucksack_priority(rucksack);
 
 	cout << result1 << endl;
 
@@ -126,8 +126,8 @@ int main()
 		sort(rucksack.begin(), rucksack.end());
 
 	auto result2 = 0;
-	for (auto i = 0; i < rucksacks.size(); i+=3)
-		result2 += CommonItem(rucksacks.begin() + i, rucksacks.begin() + i + 3);
+	for (auto i = 0; i < static_cast<int>(rucksacks.size()); i += 3)
+		result2 += common_item(rucksacks.begin() + i, rucksacks.begin() + i + 3);
 
 	cout << result2 << endl;
 

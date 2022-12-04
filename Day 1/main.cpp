@@ -16,7 +16,7 @@ int main()
 	while (getline(fin, str))
 	{
 		if (str.size() > 1)
-			sums[sums.size() - 1] += atoi(str.c_str());
+			sums[sums.size() - 1] += stoi(str);
 		else
 			sums.push_back(0);
 	}
